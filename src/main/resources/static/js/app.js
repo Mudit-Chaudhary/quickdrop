@@ -91,3 +91,81 @@ function updatePeerStatus(text, className) {
     el.textContent = text;
     el.className = className || '';
 }
+
+function handleSignalMessage(msg) {
+    switch (msg.type) {
+        case 'room-created':
+            roomId = msg.roomId;
+            isCreator = true;
+            const link = `${location.origin}/room/${roomId}`;
+            document.getElementById('room-link').value = link;
+            showView('room-view');
+            updateStatus('Waiting for peer...');
+            createPeerConnection();
+            break;
+
+        case 'room-joined':
+            roomId = msg.roomId;
+            isCreator = false;
+            document.getElementById('room-link').value = `${location.origin}/room/${roomId}`;
+            showView('room-view');
+            updateStatus('Connected to room');
+            createPeerConnection();
+            break;
+
+        case 'peer-joined':
+            updatePeerStatus('Peer connected', 'connected');
+            updateStatus('Peer joined');
+            if (isCreator) {
+                createOffer();
+            }
+            break;
+
+        case 'offer':
+            if (!isCreator && msg.sdp) {
+                pc.setRemoteDescription(new RTCSessionDescription({ type: 'offer', sdp: msg.sdp }))
+                    .then(() => pc.createAnswer())
+                    .then(answer => pc.setLocalDescription(answer))
+                    .then(() => {
+                        sendSignal({ type: 'answer', sdp: pc.localDescription.sdp });
+                    })
+                    .catch(err => console.error('Error handling offer:', err));
+            }
+            break;
+
+        case 'answer':
+            if (isCreator && msg.sdp) {
+                pc.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp: msg.sdp }))
+                    .catch(err => console.error('Error setting remote description:', err));
+            }
+            break;
+
+        case 'ice-candidate':
+            if (msg.candidate && pc) {
+                pc.addIceCandidate(new RTCIceCandidate(JSON.parse(msg.candidate)))
+                    .catch(err => console.error('Error adding ICE candidate:', err));
+            }
+            break;
+
+        case 'peer-disconnected':
+            updatePeerStatus('Peer disconnected', '');
+            updateStatus('Peer left');
+            peerConnected = false;
+            if (pc) {
+                pc.close();
+                pc = null;
+            }
+            break;
+
+        case 'error':
+            alert(msg.message || 'An error occurred');
+            showView('home-view');
+            break;
+    }
+}
+
+function sendSignal(data) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(data));
+    }
+}
