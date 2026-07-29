@@ -169,3 +169,87 @@ function sendSignal(data) {
         ws.send(JSON.stringify(data));
     }
 }
+
+function createPeerConnection() {
+    const config = { iceServers: STUN_SERVERS };
+    pc = new RTCPeerConnection(config);
+
+    pc.onicecandidate = (event) => {
+        if (event.candidate) {
+            sendSignal({
+                type: 'ice-candidate',
+                candidate: JSON.stringify(event.candidate),
+            });
+        }
+    };
+
+    pc.oniceconnectionstatechange = () => {
+        if (pc.iceConnectionState === 'connected' || pc.iceConnectionState === 'completed') {
+            peerConnected = true;
+            updatePeerStatus('Peer connected', 'connected');
+            processQueue();
+        } else if (pc.iceConnectionState === 'disconnected' || pc.iceConnectionState === 'failed') {
+            peerConnected = false;
+            updatePeerStatus('Peer disconnected');
+        }
+    };
+
+    pc.ondatachannel = (event) => {
+        dc = event.channel;
+        setupDataChannel();
+    };
+
+    if (isCreator) {
+        dc = pc.createDataChannel('filedrop', { ordered: true });
+        setupDataChannel();
+    }
+}
+
+function setupDataChannel() {
+    if (!dc) return;
+
+    dc.onopen = () => {
+        peerConnected = true;
+        updatePeerStatus('Peer connected', 'connected');
+        processQueue();
+    };
+
+    dc.onclose = () => {
+        peerConnected = false;
+        updatePeerStatus('Peer disconnected');
+    };
+
+    dc.onmessage = (event) => {
+        const data = event.data;
+        if (typeof data === 'string') {
+            const msg = JSON.parse(data);
+            if (msg.type === 'metadata') {
+                currentTransfer = {
+                    name: msg.name,
+                    size: msg.size,
+                    mime: msg.mime,
+                    received: 0,
+                    chunks: [],
+                };
+                addTransferUI(currentTransfer, 'receiving');
+            } else if (msg.type === 'transfer-complete') {
+                if (currentTransfer) {
+                    finishReceive();
+                }
+            } else if (msg.type === 'cancel') {
+                if (currentTransfer) {
+                    currentTransfer.cancelled = true;
+                    updateTransferStatus(currentTransfer, 'Cancelled', 'error');
+                    currentTransfer = null;
+                }
+            }
+        } else {
+            if (currentTransfer && !currentTransfer.cancelled) {
+                currentTransfer.chunks.push(data);
+                currentTransfer.received += data.byteLength;
+                const pct = Math.min(100, Math.round((currentTransfer.received / currentTransfer.size) * 100));
+                updateTransferProgress(currentTransfer, pct);
+            }
+        }
+    };
+}
