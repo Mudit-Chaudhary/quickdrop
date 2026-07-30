@@ -409,3 +409,56 @@ function sendFile(file) {
 
     readSlice(0);
 }
+
+function addTransferUI(transfer, direction) {
+    const container = document.getElementById('transfers');
+    const el = document.createElement('div');
+    el.className = 'transfer-item';
+    el.id = `transfer-${Date.now()}`;
+    transfer.el = el;
+
+    el.innerHTML = `
+        <div class="transfer-header">
+            <span class="transfer-name">${escapeHtml(transfer.name)}</span>
+            <span class="transfer-size">${formatSize(transfer.size)}</span>
+        </div>
+        <div class="transfer-progress-bar">
+            <div class="transfer-progress-fill"></div>
+        </div>
+        <div class="transfer-status">${direction === 'sending' ? 'Sending...' : 'Receiving...'}</div>
+    `;
+
+    container.prepend(el);
+}
+
+function updateTransferProgress(transfer, pct, complete) {
+    if (!transfer.el) return;
+    const fill = transfer.el.querySelector('.transfer-progress-fill');
+    if (fill) {
+        fill.style.width = pct + '%';
+        if (complete) fill.classList.add('complete');
+    }
+}
+
+function updateTransferStatus(transfer, text, className) {
+    if (!transfer.el) return;
+    const status = transfer.el.querySelector('.transfer-status');
+    if (status) {
+        status.textContent = text;
+        status.className = 'transfer-status' + (className ? ' ' + className : '');
+    }
+}
+
+function formatSize(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
