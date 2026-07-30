@@ -253,3 +253,159 @@ function setupDataChannel() {
         }
     };
 }
+
+function createOffer() {
+    if (!pc) return;
+    pc.createOffer()
+        .then(offer => pc.setLocalDescription(offer))
+        .then(() => {
+            sendSignal({ type: 'offer', sdp: pc.localDescription.sdp });
+        })
+        .catch(err => console.error('Error creating offer:', err));
+}
+
+function finishReceive() {
+    if (!currentTransfer || currentTransfer.cancelled) return;
+    const blob = new Blob(currentTransfer.chunks, { type: currentTransfer.mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = currentTransfer.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    updateTransferStatus(currentTransfer, 'Complete', '');
+    updateTransferProgress(currentTransfer, 100, true);
+    currentTransfer = null;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    connectWebSocket();
+
+    const path = location.pathname;
+    const roomMatch = path.match(/^\/room\/([a-zA-Z0-9-]+)$/);
+    if (roomMatch) {
+        roomId = roomMatch[1];
+        isCreator = false;
+        document.getElementById('room-link').value = `${location.origin}/room/${roomId}`;
+        showView('joining-view');
+    }
+
+    document.getElementById('create-room-btn').addEventListener('click', () => {
+        if (!ws || ws.readyState !== WebSocket.OPEN) {
+            if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
+            intentionalClose = false;
+            connectWebSocket();
+        } else {
+            sendSignal({ type: 'create-room' });
+        }
+    });
+
+    document.getElementById('copy-link-btn').addEventListener('click', () => {
+        const input = document.getElementById('room-link');
+        input.select();
+        navigator.clipboard.writeText(input.value).catch(() => {});
+    });
+
+    document.getElementById('browse-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('file-input').click();
+    });
+
+    document.getElementById('file-input').addEventListener('change', (e) => {
+        const files = e.target.files;
+        for (const file of files) {
+            pendingFileQueue.push(file);
+        }
+        e.target.value = '';
+        processQueue();
+    });
+
+    const dropZone = document.getElementById('drop-zone');
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        for (const file of files) {
+            pendingFileQueue.push(file);
+        }
+        processQueue();
+    });
+
+    dropZone.addEventListener('click', () => {
+        document.getElementById('file-input').click();
+    });
+});
+
+function processQueue() {
+    if (!peerConnected || !dc || dc.readyState !== 'open') return;
+    if (currentTransfer) return;
+
+    const file = pendingFileQueue.shift();
+    if (!file) return;
+
+    sendFile(file);
+}
+
+function sendFile(file) {
+    if (!dc || dc.readyState !== 'open') return;
+
+    currentTransfer = { name: file.name, size: file.size, sent: 0 };
+    addTransferUI(currentTransfer, 'sending');
+
+    const metadata = JSON.stringify({
+        type: 'metadata',
+        name: file.name,
+        size: file.size,
+        mime: file.type || 'application/octet-stream',
+    });
+    dc.send(metadata);
+
+    const CHUNK_SIZE = 16384;
+    const reader = new FileReader();
+    let offset = 0;
+
+    reader.onload = (e) => {
+        if (currentTransfer.cancelled) return;
+
+        dc.send(e.target.result);
+        offset += e.target.result.byteLength;
+        currentTransfer.sent = offset;
+        const pct = Math.min(100, Math.round((offset / file.size) * 100));
+        updateTransferProgress(currentTransfer, pct);
+
+        if (offset < file.size) {
+            readSlice(offset);
+        } else {
+            dc.send(JSON.stringify({ type: 'transfer-complete' }));
+            updateTransferStatus(currentTransfer, 'Complete', '');
+            updateTransferProgress(currentTransfer, 100, true);
+            currentTransfer = null;
+            processQueue();
+        }
+    };
+
+    reader.onerror = () => {
+        updateTransferStatus(currentTransfer, 'Error reading file', 'error');
+        currentTransfer = null;
+        dc.send(JSON.stringify({ type: 'cancel' }));
+    };
+
+    function readSlice(start) {
+        const slice = file.slice(start, start + CHUNK_SIZE);
+        reader.readAsArrayBuffer(slice);
+    }
+
+    readSlice(0);
+}
