@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: quickdrop
+    runtime: image
+    repo: https://github.com/Mudit-Chaudhary/quickdrop
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: BASE_URL
+        fromService:
+          name: quickdrop
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: KEEPALIVE_INTERVAL
+        value: 600000
+      - key: JAVA_OPTS
+        value: -Xmx350m -Xss256k -XX:+UseContainerSupport -XX:+UseSerialGC -Djava.security.egd=file:/dev/./urandom
