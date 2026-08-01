@@ -59,7 +59,9 @@ Sender                    Receiver
 
 ## 🚀 Run it yourself
 
-### Locally
+QuickDrop runs two ways — build with **Maven**, or use **Docker**.
+
+### 1. Maven
 
 ```bash
 # Build
@@ -71,14 +73,29 @@ java -jar target/quickdrop-1.0.0.jar
 # Open -> http://localhost:8080
 ```
 
-Open **two tabs** -> create a room -> share the link -> done!
-
-### Docker
+### 2. Docker
 
 ```bash
+# Build
 docker build -t quickdrop .
+
+# Run
 docker run -p 8080:8080 quickdrop
+
+# Open -> http://localhost:8080
 ```
+
+### Test across devices
+
+Open on **two devices** (or two tabs on the same device) -> create a room on one -> open the link on the other -> files transfer directly!
+
+To test across devices on the same WiFi, find your local IP:
+
+- **Linux:** `ip addr show | grep 'inet ' | grep -v 127.0.0.1`
+- **macOS:** `ifconfig | grep 'inet ' | grep -v 127.0.0.1`
+- **Windows:** `ipconfig`
+
+Then open `http://<your-local-ip>:8080` on the other device.
 
 ### Deploy to Render
 
