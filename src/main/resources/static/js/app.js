@@ -17,6 +17,7 @@ let peerConnected = false;
 let reconnectTimer = null;
 let reconnectAttempts = 0;
 let intentionalClose = false;
+let pendingCreate = false;
 
 const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
 const wsUrl = `${protocol}//${location.host}/signal`;
@@ -33,7 +34,10 @@ function connectWebSocket() {
     ws.onopen = () => {
         reconnectAttempts = 0;
         updateStatus('Connected', 'connected');
-        if (roomId) {
+        if (pendingCreate) {
+            pendingCreate = false;
+            sendSignal({ type: 'create-room' });
+        } else if (roomId) {
             if (isCreator) {
                 sendSignal({ type: 'create-room' });
             } else {
@@ -77,19 +81,29 @@ function scheduleReconnect() {
 
 function updateStatus(text, className) {
     const el = document.getElementById('room-status');
+    if (!el) return;
     el.textContent = text;
-    el.className = className || '';
+    el.classList.remove('text-primary', 'text-error');
+    if (className === 'connected') {
+        el.classList.add('text-primary');
+    } else if (className === 'disconnected') {
+        el.classList.add('text-error');
+    }
 }
 
 function updatePeerStatus(text, className) {
     const el = document.getElementById('peer-status');
+    if (!el) return;
     if (!text) {
         el.textContent = '';
-        el.className = '';
+        el.classList.remove('text-primary');
         return;
     }
     el.textContent = text;
-    el.className = className || '';
+    el.classList.remove('text-primary');
+    if (className === 'connected') {
+        el.classList.add('text-primary');
+    }
 }
 
 function handleSignalMessage(msg) {
@@ -102,6 +116,7 @@ function handleSignalMessage(msg) {
             showView('room-view');
             updateStatus('Waiting for peer...');
             createPeerConnection();
+            resetCreateButton();
             break;
 
         case 'room-joined':
@@ -283,6 +298,26 @@ function finishReceive() {
 document.addEventListener('DOMContentLoaded', () => {
     connectWebSocket();
 
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            syncThemeIcon();
+        });
+    }
+    syncThemeIcon();
+
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        if (!header) return;
+        if (window.scrollY > 20) {
+            header.classList.add('header-scrolled');
+        } else {
+            header.classList.remove('header-scrolled');
+        }
+    });
+
     const path = location.pathname;
     const roomMatch = path.match(/^\/room\/([a-zA-Z0-9-]+)$/);
     if (roomMatch) {
@@ -293,7 +328,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('create-room-btn').addEventListener('click', () => {
+        const btn = document.getElementById('create-room-btn');
+        if (btn.disabled) return;
+        btn.disabled = true;
+        btn.classList.add('opacity-80', 'cursor-not-allowed');
+        const ctaIcon = document.getElementById('cta-icon');
+        const ctaText = document.getElementById('cta-text');
+        ctaIcon.textContent = 'sync';
+        ctaIcon.classList.add('animate-spin');
+        ctaText.textContent = 'Initializing Secure Room...';
+
         if (!ws || ws.readyState !== WebSocket.OPEN) {
+            pendingCreate = true;
             if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
             intentionalClose = false;
             connectWebSocket();
@@ -302,14 +348,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.getElementById('copy-link-btn').addEventListener('click', () => {
+    document.getElementById('copy-link-btn').addEventListener('click', (e) => {
         const input = document.getElementById('room-link');
         input.select();
-        navigator.clipboard.writeText(input.value).catch(() => {});
+        navigator.clipboard.writeText(input.value).catch(() => {
+            document.execCommand('copy');
+        });
+
+        const btn = e.currentTarget;
+        const icon = btn.querySelector('.material-symbols-outlined');
+        const label = btn.childNodes[btn.childNodes.length - 1];
+        btn.classList.add('text-primary', 'border-primary');
+        icon.textContent = 'check';
+        label.textContent = 'Copied!';
+
+        setTimeout(() => {
+            btn.classList.remove('text-primary', 'border-primary');
+            icon.textContent = 'content_copy';
+            label.textContent = 'Copy';
+        }, 2000);
     });
 
     document.getElementById('browse-link').addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         document.getElementById('file-input').click();
     });
 
@@ -347,6 +409,26 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('file-input').click();
     });
 });
+
+function syncThemeIcon() {
+    const icon = document.getElementById('theme-icon');
+    if (!icon) return;
+    icon.textContent = document.documentElement.classList.contains('dark') ? 'light_mode' : 'dark_mode';
+}
+
+function resetCreateButton() {
+    const btn = document.getElementById('create-room-btn');
+    if (!btn || !btn.disabled) return;
+    btn.disabled = false;
+    btn.classList.remove('opacity-80', 'cursor-not-allowed');
+    const ctaIcon = document.getElementById('cta-icon');
+    const ctaText = document.getElementById('cta-text');
+    if (ctaIcon) {
+        ctaIcon.textContent = 'link';
+        ctaIcon.classList.remove('animate-spin');
+    }
+    if (ctaText) ctaText.textContent = 'Create a Share Link';
+}
 
 function processQueue() {
     if (!peerConnected || !dc || dc.readyState !== 'open') return;
@@ -412,6 +494,9 @@ function sendFile(file) {
 
 function addTransferUI(transfer, direction) {
     const container = document.getElementById('transfers');
+    const empty = container.querySelector('.transfer-empty');
+    if (empty) empty.style.display = 'none';
+
     const el = document.createElement('div');
     el.className = 'transfer-item';
     el.id = `transfer-${Date.now()}`;
@@ -429,6 +514,10 @@ function addTransferUI(transfer, direction) {
     `;
 
     container.prepend(el);
+
+    const count = container.querySelectorAll('.transfer-item').length;
+    const countEl = document.getElementById('transfer-count');
+    if (countEl) countEl.textContent = count + (count === 1 ? ' file transferred' : ' files transferred');
 }
 
 function updateTransferProgress(transfer, pct, complete) {
