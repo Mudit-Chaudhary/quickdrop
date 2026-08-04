@@ -1,321 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<meta name="color-scheme" content="dark light">
-<title>QuickDrop | P2P File Sharing</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cstyle%3Epath%7Bfill:%237bdb80%7D@media(prefers-color-scheme:light)%7Bpath%7Bfill:%23006e23%7D%7D%3C/style%3E%3Cpath%20d='m8%2022l1-7H4l9-13h2l-1%208h6L10%2022z'/%3E%3C/svg%3E">
-<script>
-        (function () {
-            const stored = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (stored === 'dark' || (!stored && prefersDark)) {
-                document.documentElement.classList.add('dark');
-            }
-        })();
-    </script>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "tertiary-fixed-dim": "rgb(var(--tertiary-fixed-dim) / <alpha-value>)",
-                    "on-error-container": "rgb(var(--on-error-container) / <alpha-value>)",
-                    "error": "rgb(var(--error) / <alpha-value>)",
-                    "surface-dim": "rgb(var(--surface-dim) / <alpha-value>)",
-                    "on-surface-variant": "rgb(var(--on-surface-variant) / <alpha-value>)",
-                    "on-surface": "rgb(var(--on-surface) / <alpha-value>)",
-                    "surface-tint": "rgb(var(--surface-tint) / <alpha-value>)",
-                    "primary-container": "rgb(var(--primary-container) / <alpha-value>)",
-                    "secondary-fixed-dim": "rgb(var(--secondary-fixed-dim) / <alpha-value>)",
-                    "tertiary-container": "rgb(var(--tertiary-container) / <alpha-value>)",
-                    "primary-fixed": "rgb(var(--primary-fixed) / <alpha-value>)",
-                    "primary-fixed-dim": "rgb(var(--primary-fixed-dim) / <alpha-value>)",
-                    "on-tertiary": "rgb(var(--on-tertiary) / <alpha-value>)",
-                    "on-error": "rgb(var(--on-error) / <alpha-value>)",
-                    "on-tertiary-fixed-variant": "rgb(var(--on-tertiary-fixed-variant) / <alpha-value>)",
-                    "surface-container-highest": "rgb(var(--surface-container-highest) / <alpha-value>)",
-                    "surface-bright": "rgb(var(--surface-bright) / <alpha-value>)",
-                    "surface": "rgb(var(--surface) / <alpha-value>)",
-                    "surface-container": "rgb(var(--surface-container) / <alpha-value>)",
-                    "on-primary-fixed-variant": "rgb(var(--on-primary-fixed-variant) / <alpha-value>)",
-                    "on-secondary-fixed": "rgb(var(--on-secondary-fixed) / <alpha-value>)",
-                    "surface-variant": "rgb(var(--surface-variant) / <alpha-value>)",
-                    "inverse-primary": "rgb(var(--inverse-primary) / <alpha-value>)",
-                    "on-tertiary-fixed": "rgb(var(--on-tertiary-fixed) / <alpha-value>)",
-                    "outline": "rgb(var(--outline) / <alpha-value>)",
-                    "inverse-on-surface": "rgb(var(--inverse-on-surface) / <alpha-value>)",
-                    "on-primary-fixed": "rgb(var(--on-primary-fixed) / <alpha-value>)",
-                    "surface-container-lowest": "rgb(var(--surface-container-lowest) / <alpha-value>)",
-                    "on-secondary": "rgb(var(--on-secondary) / <alpha-value>)",
-                    "background": "rgb(var(--background) / <alpha-value>)",
-                    "tertiary-fixed": "rgb(var(--tertiary-fixed) / <alpha-value>)",
-                    "inverse-surface": "rgb(var(--inverse-surface) / <alpha-value>)",
-                    "on-primary-container": "rgb(var(--on-primary-container) / <alpha-value>)",
-                    "error-container": "rgb(var(--error-container) / <alpha-value>)",
-                    "secondary": "rgb(var(--secondary) / <alpha-value>)",
-                    "on-primary": "rgb(var(--on-primary) / <alpha-value>)",
-                    "on-tertiary-container": "rgb(var(--on-tertiary-container) / <alpha-value>)",
-                    "tertiary": "rgb(var(--tertiary) / <alpha-value>)",
-                    "secondary-fixed": "rgb(var(--secondary-fixed) / <alpha-value>)",
-                    "primary": "rgb(var(--primary) / <alpha-value>)",
-                    "surface-container-low": "rgb(var(--surface-container-low) / <alpha-value>)",
-                    "on-background": "rgb(var(--on-background) / <alpha-value>)",
-                    "secondary-container": "rgb(var(--secondary-container) / <alpha-value>)",
-                    "on-secondary-fixed-variant": "rgb(var(--on-secondary-fixed-variant) / <alpha-value>)",
-                    "on-secondary-container": "rgb(var(--on-secondary-container) / <alpha-value>)",
-                    "surface-container-high": "rgb(var(--surface-container-high) / <alpha-value>)",
-                    "outline-variant": "rgb(var(--outline-variant) / <alpha-value>)"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "spacing": {
-                    "margin-mobile": "16px",
-                    "unit": "4px",
-                    "margin-desktop": "32px",
-                    "gutter": "16px",
-                    "container-max": "1280px"
-            },
-            "fontFamily": {
-                    "body-md": ["Inter"],
-                    "headline-lg-mobile": ["Inter"],
-                    "headline-sm": ["Inter"],
-                    "headline-md": ["Inter"],
-                    "label-md": ["Inter"],
-                    "headline-lg": ["Inter"],
-                    "code-md": ["JetBrains Mono"],
-                    "body-lg": ["Inter"],
-                    "body-sm": ["Inter"],
-                    "label-sm": ["JetBrains Mono"]
-            },
-            "fontSize": {
-                    "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
-                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
-                    "headline-sm": ["20px", {"lineHeight": "1.25", "fontWeight": "600"}],
-                    "headline-md": ["24px", {"lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                    "label-md": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
-                    "headline-lg": ["32px", {"lineHeight": "1.25", "letterSpacing": "-0.02em", "fontWeight": "600"}],
-                    "code-md": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}],
-                    "body-lg": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
-                    "body-sm": ["14px", {"lineHeight": "1.43", "fontWeight": "400"}],
-                    "label-sm": ["12px", {"lineHeight": "1.17", "letterSpacing": "0.05em", "fontWeight": "500"}]
-            }
-          },
-        },
-      }
-    </script>
-<link rel="stylesheet" href="/css/style.css">
-</head>
-<body class="font-body-md text-body-md selection:bg-primary-container selection:text-on-primary-container">
-<!-- TopNavBar -->
-<header class="bg-surface-container w-full border-b border-outline-variant fixed top-0 z-50">
-<nav class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
-<span class="text-headline-sm font-headline-sm font-bold text-on-surface">QuickDrop</span>
-</div>
-<div class="flex items-center gap-4">
-<button id="theme-toggle" aria-label="Toggle light and dark mode" title="Toggle theme" class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all p-2 rounded-lg hover:bg-surface-container-high"><span id="theme-icon">dark_mode</span></button>
-</div>
-</nav>
-</header>
-<main class="pt-24 pb-20 px-margin-mobile md:px-margin-desktop max-w-[900px] mx-auto min-h-screen">
-<!-- Home View -->
-<div id="home-view" class="view active">
-<div class="text-center mb-12">
-<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary font-label-md text-label-md mb-6">
-<span class="relative flex h-2 w-2">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-</span>
-                P2P Protocol Live
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta name="color-scheme" content="dark light">
+        <title>QuickDrop | P2P File Sharing</title>
+        <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cstyle%3Epath%7Bfill:%237bdb80%7D@media(prefers-color-scheme:light)%7Bpath%7Bfill:%23006e23%7D%7D%3C/style%3E%3Cpath%20d='m8%2022l1-7H4l9-13h2l-1%208h6L10%2022z'/%3E%3C/svg%3E">
+        <script>
+            (function () {
+                const stored = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (stored === 'dark' || (!stored && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                }
+            })();
+        </script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/css/tailwind.css">
+        <link rel="stylesheet" href="/css/style.css">
+    </head>
+    <body class="font-body-md text-body-md selection:bg-primary-container selection:text-on-primary-container">
+        <!-- TopNavBar -->
+        <header class="bg-surface-container w-full border-b border-outline-variant fixed top-0 z-50">
+            <nav class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                    <span class="text-headline-sm font-headline-sm font-bold text-on-surface">QuickDrop</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="theme-toggle" aria-label="Toggle light and dark mode" title="Toggle theme" class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all p-2 rounded-lg hover:bg-surface-container-high"><span id="theme-icon">dark_mode</span></button>
+                </div>
+            </nav>
+        </header>
+        <main class="pt-24 pb-20 px-margin-mobile md:px-margin-desktop max-w-[900px] mx-auto min-h-screen">
+            <!-- Home View -->
+            <div id="home-view" class="view active">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary font-label-md text-label-md mb-6">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                        </span>
+                        P2P Protocol Live
+                    </div>
+                    <p class="text-on-surface-variant font-body-lg text-body-lg mb-4">Direct peer-to-peer file sharing. Nothing stored on servers.</p>
+                </div>
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Share Card -->
+                    <div class="github-border bg-surface-container-low rounded-xl overflow-hidden glow-effect">
+                        <div class="bg-surface-container p-4 border-b border-outline-variant">
+                            <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">share</span>
+                                Share files instantly
+                            </h2>
+                        </div>
+                        <div class="p-8 md:p-12 text-center">
+                            <p class="text-on-surface-variant font-body-lg text-body-lg mb-10 max-w-lg mx-auto">
+                                Send files of any size directly between devices. <br class="hidden md:block">
+                                <span class="text-on-surface font-semibold">End-to-end encrypted (DTLS)</span> and ultra-fast.
+                            </p>
+                            <button id="create-room-btn" class="group relative inline-flex items-center justify-center gap-3 bg-[#238636] hover:bg-[#2ea043] text-on-primary-container px-10 py-5 rounded-xl font-bold text-lg transition-all transform hover:-translate-y-1 shadow-lg active:scale-95 w-full md:w-auto">
+                                <span id="cta-icon" class="material-symbols-outlined group-hover:rotate-12 transition-transform">link</span>
+                                <span id="cta-text">Create a Share Link</span>
+                            </button>
+                            <p class="mt-6 font-code-md text-code-md text-on-surface-variant opacity-60">
+                                No registration required. Private. Fast. Open.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- How it works -->
+                    <div class="github-border bg-surface-container-low rounded-xl overflow-hidden">
+                        <div class="bg-surface-container p-4 border-b border-outline-variant">
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">info</span>
+                                How it works
+                            </h3>
+                        </div>
+                        <div class="p-6 md:p-10">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div class="space-y-4">
+                                    <div class="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-bold">1</div>
+                                    <div>
+                                        <h4 class="font-bold text-on-surface mb-1">Generate Room</h4>
+                                        <p class="text-on-surface-variant font-body-md text-body-md">Click "Create a Share Link" to get a unique, temporary room link.</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-bold">2</div>
+                                    <div>
+                                        <h4 class="font-bold text-on-surface mb-1">Invite Recipient</h4>
+                                        <p class="text-on-surface-variant font-body-md text-body-md">Share the link with whoever you want to send files to via your favorite app.</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-bold">3</div>
+                                    <div>
+                                        <h4 class="font-bold text-on-surface mb-1">Stream Transfer</h4>
+                                        <p class="text-on-surface-variant font-body-md text-body-md">Drag &amp; drop files and they transfer directly — no upload needed, no storage used.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature Bento Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                    <div class="github-border bg-surface-container-low p-6 rounded-xl flex flex-col">
+                        <span class="material-symbols-outlined text-on-surface-variant mb-4" style="font-variation-settings: 'FILL' 1;">security</span>
+                        <div class="flex flex-col space-y-1">
+                            <p class="text-on-surface font-semibold">WebRTC Encryption</p>
+                            <p class="text-on-surface-variant text-label-md">Direct device-to-device tunneling.</p>
+                        </div>
+                    </div>
+                    <div class="github-border bg-surface-container-low p-6 rounded-xl flex flex-col">
+                        <span class="material-symbols-outlined text-on-surface-variant mb-4" style="font-variation-settings: 'FILL' 1;">speed</span>
+                        <div class="flex flex-col space-y-1">
+                            <p class="text-on-surface font-semibold">Low Latency</p>
+                            <p class="text-on-surface-variant text-label-md">No cloud storage round-trip.</p>
+                        </div>
+                    </div>
+                    <div class="github-border bg-surface-container-low p-6 rounded-xl flex flex-col">
+                        <span class="material-symbols-outlined text-on-surface-variant mb-4" style="font-variation-settings: 'FILL' 1;">folder_zip</span>
+                        <div class="flex flex-col space-y-1">
+                            <p class="text-on-surface font-semibold">Large Files</p>
+                            <p class="text-on-surface-variant text-label-md">Streams in chunks, straight between devices.</p>
+                        </div>
+                    </div>
+                    <div class="github-border bg-surface-container-low p-6 rounded-xl flex flex-col">
+                        <span class="material-symbols-outlined text-on-surface-variant mb-4" style="font-variation-settings: 'FILL' 1;">terminal</span>
+                        <div class="flex flex-col space-y-1">
+                            <p class="text-on-surface font-semibold">Open Source</p>
+                            <p class="text-on-surface-variant text-label-md">Verify our privacy claims on GitHub.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-<p class="text-on-surface-variant font-body-lg text-body-lg mb-4">Direct peer-to-peer file sharing. Nothing stored on servers.</p>
-</div>
-<div class="grid grid-cols-1 gap-6">
-<!-- Share Card -->
-<div class="github-border bg-surface-container-low rounded-xl overflow-hidden glow-effect">
-<div class="bg-surface-container p-4 border-b border-outline-variant">
-<h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
-<span class="material-symbols-outlined text-primary">share</span>
-                    Share files instantly
-                </h2>
-</div>
-<div class="p-8 md:p-12 text-center">
-<p class="text-on-surface-variant font-body-lg text-body-lg mb-10 max-w-lg mx-auto">
-                    Send files of any size directly between devices. <br class="hidden md:block">
-<span class="text-on-surface font-semibold">End-to-end encrypted (DTLS)</span> and ultra-fast.
-                </p>
-<button id="create-room-btn" class="group relative inline-flex items-center justify-center gap-3 bg-[#238636] hover:bg-[#2ea043] text-on-primary-container px-10 py-5 rounded-xl font-bold text-lg transition-all transform hover:-translate-y-1 shadow-lg active:scale-95 w-full md:w-auto">
-<span id="cta-icon" class="material-symbols-outlined group-hover:rotate-12 transition-transform">link</span>
-<span id="cta-text">Create a Share Link</span>
-</button>
-<p class="mt-6 font-code-md text-code-md text-on-surface-variant opacity-60">
-                    No registration required. Private. Fast. Open.
-                </p>
-</div>
-</div>
-<!-- How it works -->
-<div class="github-border bg-surface-container-low rounded-xl overflow-hidden">
-<div class="bg-surface-container p-4 border-b border-outline-variant">
-<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
-<span class="material-symbols-outlined text-primary">info</span>
-                    How it works
-                </h3>
-</div>
-<div class="p-6 md:p-10">
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div class="space-y-4">
-<div class="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-bold">1</div>
-<div>
-<h4 class="font-bold text-on-surface mb-1">Generate Room</h4>
-<p class="text-on-surface-variant font-body-md text-body-md">Click "Create a Share Link" to get a unique, temporary room link.</p>
-</div>
-</div>
-<div class="space-y-4">
-<div class="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-bold">2</div>
-<div>
-<h4 class="font-bold text-on-surface mb-1">Invite Recipient</h4>
-<p class="text-on-surface-variant font-body-md text-body-md">Share the link with whoever you want to send files to via your favorite app.</p>
-</div>
-</div>
-<div class="space-y-4">
-<div class="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-bold">3</div>
-<div>
-<h4 class="font-bold text-on-surface mb-1">Stream Transfer</h4>
-<p class="text-on-surface-variant font-body-md text-body-md">Drag &amp; drop files and they transfer directly — no upload needed, no storage used.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Feature Bento Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-<div class="github-border bg-surface-container-low p-6 rounded-xl flex flex-col">
-<span class="material-symbols-outlined text-on-surface-variant mb-4" style="font-variation-settings: 'FILL' 1;">security</span>
-<div class="flex flex-col space-y-1">
-<p class="text-on-surface font-semibold">WebRTC Encryption</p>
-<p class="text-on-surface-variant text-label-md">Direct device-to-device tunneling.</p>
-</div>
-</div>
-<div class="github-border bg-surface-container-low p-6 rounded-xl flex flex-col">
-<span class="material-symbols-outlined text-on-surface-variant mb-4" style="font-variation-settings: 'FILL' 1;">speed</span>
-<div class="flex flex-col space-y-1">
-<p class="text-on-surface font-semibold">Low Latency</p>
-<p class="text-on-surface-variant text-label-md">No cloud storage round-trip.</p>
-</div>
-</div>
-<div class="github-border bg-surface-container-low p-6 rounded-xl flex flex-col">
-<span class="material-symbols-outlined text-on-surface-variant mb-4" style="font-variation-settings: 'FILL' 1;">folder_zip</span>
-<div class="flex flex-col space-y-1">
-<p class="text-on-surface font-semibold">Large Files</p>
-<p class="text-on-surface-variant text-label-md">Streams in chunks, straight between devices.</p>
-</div>
-</div>
-<div class="github-border bg-surface-container-low p-6 rounded-xl flex flex-col">
-<span class="material-symbols-outlined text-on-surface-variant mb-4" style="font-variation-settings: 'FILL' 1;">terminal</span>
-<div class="flex flex-col space-y-1">
-<p class="text-on-surface font-semibold">Open Source</p>
-<p class="text-on-surface-variant text-label-md">Verify our privacy claims on GitHub.</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Room View -->
-<div id="room-view" class="view max-w-[800px] mx-auto w-full">
-<!-- Room Status -->
-<div class="w-full mb-6">
-<div class="bg-surface-container-low border border-outline-variant rounded-lg p-3 flex items-center gap-3">
-<div class="relative flex h-3 w-3">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-<span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
-</div>
-<span id="room-status" class="text-on-surface font-medium text-body-md">Waiting for peer...</span>
-<span id="peer-status" class="ml-auto text-on-surface-variant text-label-md font-label-md bg-surface-container px-2 py-1 rounded border border-outline-variant"></span>
-</div>
-</div>
-<!-- Room Link Card -->
-<div class="w-full bg-surface-container border border-outline-variant rounded-lg overflow-hidden mb-6 shadow-sm">
-<div class="bg-surface-container-high px-4 py-2 border-b border-outline-variant flex items-center justify-between">
-<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Active Room</h3>
-<span class="material-symbols-outlined text-on-surface-variant text-[18px]">settings</span>
-</div>
-<div class="p-4 flex flex-col md:flex-row gap-3 items-center">
-<div class="relative flex-grow w-full glow-border transition-all">
-<input id="room-link" class="w-full bg-surface-container-lowest border border-outline-variant rounded px-3 py-2 font-code-md text-code-md text-primary focus:ring-0 focus:outline-none focus:border-secondary transition-colors" readonly="" type="text">
-</div>
-<button id="copy-link-btn" class="w-full md:w-auto px-4 py-2 bg-surface-container-highest border border-outline-variant text-on-surface font-medium rounded hover:bg-surface-variant transition-all active:scale-95 flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-[20px]">content_copy</span>
-                    Copy
-                </button>
-</div>
-</div>
-<!-- File Drop Zone -->
-<div class="w-full relative group">
-<div id="drop-zone" class="border-2 border-dashed border-outline-variant rounded-xl p-12 flex flex-col items-center justify-center text-center transition-all duration-300 hover:border-primary group-hover:bg-surface-container-low cursor-pointer">
-<div class="mb-4 p-4 rounded-full bg-surface-container-high border border-outline-variant text-primary transform transition-transform group-hover:scale-110">
-<span class="material-symbols-outlined text-[48px]">folder_open</span>
-</div>
-<h4 class="text-headline-sm font-headline-sm mb-2">Drag &amp; drop files here</h4>
-<p class="text-on-surface-variant text-body-md mb-6">Support for documents, images, videos, and large binaries</p>
-<button id="browse-link" class="primary-gradient text-on-primary-container px-6 py-2.5 rounded-lg font-medium shadow-md transition-all active:scale-95 flex items-center gap-2 border border-primary/20">
-<span class="material-symbols-outlined text-[20px]">upload</span>
-                    Browse Files
-                </button>
-</div>
-<input id="file-input" class="hidden" type="file" multiple>
-</div>
-<!-- Transfer History -->
-<div class="w-full mt-10">
-<div class="flex items-center justify-between mb-4">
-<h3 class="text-headline-sm font-headline-sm">Transfer History</h3>
-<span id="transfer-count" class="text-label-md text-on-surface-variant">0 files transferred</span>
-</div>
-<div id="transfers" class="space-y-3">
-<div class="transfer-empty border border-outline-variant rounded-lg overflow-hidden bg-surface-container-low p-8 flex flex-col items-center justify-center text-on-surface-variant">
-<span class="material-symbols-outlined text-[32px] mb-2 opacity-50">history</span>
-<p class="text-body-md italic">No files shared in this session yet.</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Joining View -->
-<div id="joining-view" class="view max-w-[800px] mx-auto w-full">
-<div class="w-full bg-surface-container border border-outline-variant rounded-lg overflow-hidden p-10 text-center">
-<div class="loading-spinner"></div>
-<h2 class="text-headline-md font-headline-md text-on-surface mb-2">Joining room...</h2>
-<p id="joining-status" class="text-on-surface-variant text-body-md">Establishing secure connection</p>
-</div>
-</div>
-</main>
-<!-- Footer -->
-<footer class="w-full mt-auto bg-surface-dim">
-<div class="w-full h-px bg-outline-variant"></div>
-<div class="flex flex-col md:flex-row justify-between items-center gap-6 px-margin-mobile md:px-margin-desktop py-12 max-w-container-max mx-auto">
-<a href="https://github.com/Mudit-Chaudhary/quickdrop" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-primary text-on-primary px-5 py-2 rounded-full font-label-sm text-label-sm uppercase tracking-wider hover:opacity-90 transition-all transform hover:scale-105 shadow-lg">
-<span class="material-symbols-outlined text-[20px]">code</span>
-<span>GitHub</span>
-</a>
-<div class="font-body-sm text-body-sm text-on-surface-variant flex flex-col items-center text-center">
-<div>© 2026 QuickDrop</div>
-<div>Built for performance. Built for developers.</div>
-</div>
-<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-<span class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> All Systems Operational
-</span>
-</div>
-</div>
-</footer>
-<script src="/js/app.js"></script>
-</body></html>
+            <!-- Room View -->
+            <div id="room-view" class="view max-w-[800px] mx-auto w-full">
+                <!-- Room Status -->
+                <div class="w-full mb-6">
+                    <div class="bg-surface-container-low border border-outline-variant rounded-lg p-3 flex items-center gap-3">
+                        <div class="relative flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                        </div>
+                        <span id="room-status" class="text-on-surface font-medium text-body-md">Waiting for peer...</span>
+                        <span id="peer-status" class="ml-auto text-on-surface-variant text-label-md font-label-md bg-surface-container px-2 py-1 rounded border border-outline-variant"></span>
+                    </div>
+                </div>
+                <!-- Room Link Card -->
+                <div class="w-full bg-surface-container border border-outline-variant rounded-lg overflow-hidden mb-6 shadow-sm">
+                    <div class="bg-surface-container-high px-4 py-2 border-b border-outline-variant flex items-center justify-between">
+                        <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Active Room</h3>
+                        <span class="material-symbols-outlined text-on-surface-variant text-[18px]">settings</span>
+                    </div>
+                    <div class="p-4 flex flex-col md:flex-row gap-3 items-center">
+                        <div class="relative flex-grow w-full glow-border transition-all">
+                            <input id="room-link" class="w-full bg-surface-container-lowest border border-outline-variant rounded px-3 py-2 font-code-md text-code-md text-primary focus:ring-0 focus:outline-none focus:border-secondary transition-colors" readonly="" type="text">
+                        </div>
+                        <button id="copy-link-btn" class="w-full md:w-auto px-4 py-2 bg-surface-container-highest border border-outline-variant text-on-surface font-medium rounded hover:bg-surface-variant transition-all active:scale-95 flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[20px]">content_copy</span>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                <!-- File Drop Zone -->
+                <div class="w-full relative group">
+                    <div id="drop-zone" class="border-2 border-dashed border-outline-variant rounded-xl p-12 flex flex-col items-center justify-center text-center transition-all duration-300 hover:border-primary group-hover:bg-surface-container-low cursor-pointer">
+                        <div class="mb-4 p-4 rounded-full bg-surface-container-high border border-outline-variant text-primary transform transition-transform group-hover:scale-110">
+                            <span class="material-symbols-outlined text-[48px]">folder_open</span>
+                        </div>
+                        <h4 class="text-headline-sm font-headline-sm mb-2">Drag &amp; drop files here</h4>
+                        <p class="text-on-surface-variant text-body-md mb-6">Support for documents, images, videos, and large binaries</p>
+                        <button id="browse-link" class="primary-gradient text-on-primary-container px-6 py-2.5 rounded-lg font-medium shadow-md transition-all active:scale-95 flex items-center gap-2 border border-primary/20">
+                            <span class="material-symbols-outlined text-[20px]">upload</span>
+                            Browse Files
+                        </button>
+                    </div>
+                    <input id="file-input" class="hidden" type="file" multiple>
+                </div>
+                <!-- Transfer History -->
+                <div class="w-full mt-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-headline-sm font-headline-sm">Transfer History</h3>
+                        <span id="transfer-count" class="text-label-md text-on-surface-variant">0 files transferred</span>
+                    </div>
+                    <div id="transfers" class="space-y-3">
+                        <div class="transfer-empty border border-outline-variant rounded-lg overflow-hidden bg-surface-container-low p-8 flex flex-col items-center justify-center text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[32px] mb-2 opacity-50">history</span>
+                            <p class="text-body-md italic">No files shared in this session yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Joining View -->
+            <div id="joining-view" class="view max-w-[800px] mx-auto w-full">
+                <div class="w-full bg-surface-container border border-outline-variant rounded-lg overflow-hidden p-10 text-center">
+                    <div class="loading-spinner"></div>
+                    <h2 class="text-headline-md font-headline-md text-on-surface mb-2">Joining room...</h2>
+                    <p id="joining-status" class="text-on-surface-variant text-body-md">Establishing secure connection</p>
+                </div>
+            </div>
+        </main>
+        <!-- Footer -->
+        <footer class="w-full mt-auto bg-surface-dim">
+            <div class="w-full h-px bg-outline-variant"></div>
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 px-margin-mobile md:px-margin-desktop py-12 max-w-container-max mx-auto">
+                <a href="https://github.com/Mudit-Chaudhary/quickdrop" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-primary text-on-primary px-5 py-2 rounded-full font-label-sm text-label-sm uppercase tracking-wider hover:opacity-90 transition-all transform hover:scale-105 shadow-lg">
+                    <span class="material-symbols-outlined text-[20px]">code</span>
+                    <span>GitHub</span>
+                </a>
+                <div class="font-body-sm text-body-sm text-on-surface-variant flex flex-col items-center text-center">
+                    <div>© 2026 QuickDrop</div>
+                    <div>Built for performance. Built for developers.</div>
+                </div>
+                <div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
+                    <span class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> All Systems Operational
+                    </span>
+                </div>
+            </div>
+        </footer>
+        <script src="/js/app.js"></script>
+            </body></html>
