@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">QuickDrop</title><desc id="desc">Green Q logo with a file and fast send mark</desc>
+  <defs>
+    <linearGradient id="bg" x1="14" y1="12" x2="116" y2="117" gradientUnits="userSpaceOnUse"><stop stop-color="#F7FFF9"/><stop offset="1" stop-color="#DDF7E4"/></linearGradient>
+    <linearGradient id="q" x1="30" y1="20" x2="102" y2="110" gradientUnits="userSpaceOnUse"><stop stop-color="#7CFF9A"/><stop offset=".43" stop-color="#2EA043"/><stop offset="1" stop-color="#0E5F2C"/></linearGradient>
+    <linearGradient id="doc" x1="49" y1="39" x2="80" y2="82" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#E8F7ED"/></linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="31" fill="url(#bg)"/>
+  <path d="M18 39h34M10 52h42M21 65h27M13 78h39M32 91h17" stroke="#2EA043" stroke-width="7" stroke-linecap="round" opacity=".6"/>
+  <circle cx="67" cy="63" r="40" fill="#082316" opacity=".95"/>
+  <circle cx="67" cy="63" r="38" fill="none" stroke="#3FB950" stroke-width="22" opacity=".24"/>
+  <circle cx="67" cy="63" r="38" fill="none" stroke="url(#q)" stroke-width="16"/>
+  <path d="M88 89l19 19" stroke="#3FB950" stroke-width="22" stroke-linecap="round" opacity=".24"/>
+  <path d="M88 89l19 19" stroke="url(#q)" stroke-width="16" stroke-linecap="round"/>
+  <path d="M51 42h19l14 14v30H51z" fill="url(#doc)"/>
+  <path d="M70 42v15h14" fill="#CFEFDA"/>
+  <path d="M58 63h17M58 73h15" stroke="#238636" stroke-width="5" stroke-linecap="round"/>
+  <path d="M78 78l30-15-16 29-7-11z" fill="#5DFFA1" stroke="#0E5F2C" stroke-width="4" stroke-linejoin="round"/>
+</svg>

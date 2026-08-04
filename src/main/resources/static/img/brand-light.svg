@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 148" role="img" aria-labelledby="title desc">
+  <title id="title">QuickDrop</title><desc id="desc">QuickDrop green brand mark for light theme</desc>
+  <defs>
+    <linearGradient id="q" x1="35" y1="15" x2="134" y2="133" gradientUnits="userSpaceOnUse"><stop stop-color="#76FF98"/><stop offset=".42" stop-color="#2EA043"/><stop offset="1" stop-color="#0E5F2C"/></linearGradient>
+    <linearGradient id="trail" x1="8" y1="0" x2="118" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#3FB950" stop-opacity="0"/><stop offset=".32" stop-color="#3FB950"/><stop offset="1" stop-color="#146C2E"/></linearGradient>
+    <linearGradient id="doc" x1="58" y1="42" x2="92" y2="91" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#E7F7EC"/></linearGradient>
+  </defs>
+  <g>
+    <path d="M17 43h55M4 60h67M22 77h42M10 94h61M39 111h22" stroke="#2EA043" stroke-width="9" stroke-linecap="round" opacity=".72"/>
+    <circle cx="82" cy="74" r="52" fill="#082316"/>
+    <circle cx="82" cy="74" r="49" fill="none" stroke="#3FB950" stroke-width="27" opacity=".22"/>
+    <circle cx="82" cy="74" r="49" fill="none" stroke="url(#q)" stroke-width="19"/>
+    <path d="M110 106l24 24" stroke="#3FB950" stroke-width="27" stroke-linecap="round" opacity=".22"/>
+    <path d="M110 106l24 24" stroke="url(#q)" stroke-width="19" stroke-linecap="round"/>
+    <path d="M61 47h24l16 16v36H61z" fill="url(#doc)"/>
+    <path d="M85 47v17h16" fill="#C9EFD5"/>
+    <path d="M69 72h21M69 84h17" stroke="#238636" stroke-width="6" stroke-linecap="round"/>
+    <path d="M94 91l38-19-20 37-9-14z" fill="#5DFFA1" stroke="#0E5F2C" stroke-width="5" stroke-linejoin="round"/>
+  </g>
+  <text x="165" y="88" fill="#07150D" font-family="Inter, Avenir Next, Segoe UI, sans-serif" font-size="60" font-weight="850" textLength="160" lengthAdjust="spacingAndGlyphs">Quick</text>
+  <text x="322" y="88" fill="#238636" font-family="Inter, Avenir Next, Segoe UI, sans-serif" font-size="60" font-weight="850" textLength="150" lengthAdjust="spacingAndGlyphs">Drop</text>
+  <path d="M169 114h58M535 114h58" stroke="#3FB950" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+  <text x="242" y="119" fill="#607064" font-family="Inter, Avenir Next, Segoe UI, sans-serif" font-size="13" font-weight="650" letter-spacing="3.5">FILES JUST FLOW</text>
+</svg>

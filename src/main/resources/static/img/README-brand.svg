@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" role="img" aria-labelledby="title desc">
+  <title id="title">QuickDrop</title><desc id="desc">QuickDrop green README logo with Q, file, motion trails and paper plane</desc>
+  <defs>
+    <radialGradient id="back" cx="455" cy="111" r="420" gradientUnits="userSpaceOnUse"><stop stop-color="#123D24"/><stop offset=".55" stop-color="#07150D"/><stop offset="1" stop-color="#020807"/></radialGradient>
+    <linearGradient id="q" x1="300" y1="31" x2="505" y2="230" gradientUnits="userSpaceOnUse"><stop stop-color="#91FFAD"/><stop offset=".37" stop-color="#3FB950"/><stop offset=".72" stop-color="#1F883D"/><stop offset="1" stop-color="#0B5A29"/></linearGradient>
+    <linearGradient id="trail" x1="106" y1="0" x2="348" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#3FB950" stop-opacity="0"/><stop offset=".28" stop-color="#3FB950"/><stop offset="1" stop-color="#7CFF9A"/></linearGradient>
+    <linearGradient id="plane" x1="410" y1="135" x2="511" y2="212" gradientUnits="userSpaceOnUse"><stop stop-color="#8DFFAD"/><stop offset="1" stop-color="#2EA043"/></linearGradient>
+    <linearGradient id="doc" x1="344" y1="94" x2="414" y2="177" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#DFF4E7"/></linearGradient>
+  </defs>
+  <rect width="900" height="300" rx="34" fill="url(#back)"/>
+  <path d="M156 54h148M122 80h182M164 106h124M136 132h168M188 158h86" stroke="#3FB950" stroke-width="15" stroke-linecap="round" opacity=".78"/>
+  <circle cx="450" cy="103" r="80" fill="#020807"/>
+  <circle cx="450" cy="103" r="76" fill="none" stroke="#3FB950" stroke-width="38" opacity=".24"/>
+  <circle cx="450" cy="103" r="76" fill="none" stroke="url(#q)" stroke-width="28"/>
+  <path d="M494 153l38 38" stroke="#3FB950" stroke-width="38" stroke-linecap="round" opacity=".24"/>
+  <path d="M494 153l38 38" stroke="url(#q)" stroke-width="28" stroke-linecap="round"/>
+  <path d="M414 70h35l24 24v54h-59z" fill="url(#doc)"/>
+  <path d="M449 70v26h24" fill="#BEECCB"/>
+  <path d="M427 106h32M427 124h27" stroke="#238636" stroke-width="8" stroke-linecap="round"/>
+  <path d="M466 137l70-35-37 68-17-26z" fill="url(#plane)" stroke="#063B1B" stroke-width="7" stroke-linejoin="round"/>
+  <text x="150" y="262" fill="#FFFFFF" font-family="Inter, Avenir Next, Segoe UI, sans-serif" font-size="72" font-weight="850" textLength="245" lengthAdjust="spacingAndGlyphs">Quick</text>
+  <text x="393" y="262" fill="#3FB950" font-family="Inter, Avenir Next, Segoe UI, sans-serif" font-size="72" font-weight="850" textLength="230" lengthAdjust="spacingAndGlyphs">Drop</text>
+  <path d="M276 283h86M730 283h86" stroke="#3FB950" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+  <text x="374" y="288" fill="#E4F8E9" font-family="Inter, Avenir Next, Segoe UI, sans-serif" font-size="17" font-weight="650" letter-spacing="2.4">FILES JUST FLOW</text>
+</svg>
