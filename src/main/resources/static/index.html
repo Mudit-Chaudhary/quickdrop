@@ -5,7 +5,8 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta name="color-scheme" content="dark light">
         <title>QuickDrop | P2P File Sharing</title>
-        <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cstyle%3Epath%7Bfill:%237bdb80%7D@media(prefers-color-scheme:light)%7Bpath%7Bfill:%23006e23%7D%7D%3C/style%3E%3Cpath%20d='m8%2022l1-7H4l9-13h2l-1%208h6L10%2022z'/%3E%3C/svg%3E">
+        <link id="favicon" rel="icon" href="/img/favicon-light.svg">
+        <meta name="theme-color" id="theme-color" content="#ECEEEA">
         <script>
             (function () {
                 const stored = localStorage.getItem('theme');
@@ -17,23 +18,24 @@
         </script>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="/css/tailwind.css">
-        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/tailwind.css?v=2">
+        <link rel="stylesheet" href="/css/style.css?v=2">
     </head>
     <body class="font-body-md text-body-md selection:bg-primary-container selection:text-on-primary-container">
         <!-- TopNavBar -->
         <header class="bg-surface-container w-full border-b border-outline-variant fixed top-0 z-50">
-            <nav class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
-                    <span class="text-headline-sm font-headline-sm font-bold text-on-surface">QuickDrop</span>
+            <nav class="grid grid-cols-[1fr_auto_1fr] items-center px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+                <div></div>
+                <div class="flex justify-self-center">
+                    <img class="hidden dark:block h-16 w-auto" src="/img/brand-dark.svg" alt="QuickDrop">
+                    <img class="block dark:hidden h-16 w-auto" src="/img/brand-light.svg" alt="QuickDrop">
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 justify-self-end">
                     <button id="theme-toggle" aria-label="Toggle light and dark mode" title="Toggle theme" class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all p-2 rounded-lg hover:bg-surface-container-high"><span id="theme-icon">dark_mode</span></button>
                 </div>
             </nav>
         </header>
-        <main class="pt-24 pb-20 px-margin-mobile md:px-margin-desktop max-w-[900px] mx-auto min-h-screen">
+        <main class="pt-32 pb-20 px-margin-mobile md:px-margin-desktop max-w-[900px] mx-auto min-h-screen">
             <!-- Home View -->
             <div id="home-view" class="view active">
                 <div class="text-center mb-12">
@@ -222,5 +224,5 @@
                 </div>
             </div>
         </footer>
-        <script src="/js/app.js"></script>
+        <script src="/js/app.js?v=2"></script>
             </body></html>

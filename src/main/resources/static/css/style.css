@@ -14,12 +14,12 @@
     --surface-dim: 216 218 214;
     --on-surface-variant: 67 71 63;
     --on-surface: 26 28 25;
-    --surface-tint: 0 110 35;
-    --primary-container: 151 249 153;
+    --surface-tint: 35 134 54;
+    --primary-container: 141 255 173;
     --secondary-fixed-dim: 172 199 255;
     --tertiary-container: 236 220 255;
-    --primary-fixed: 151 249 153;
-    --primary-fixed-dim: 123 219 128;
+    --primary-fixed: 141 255 173;
+    --primary-fixed-dim: 63 185 80;
     --on-tertiary: 255 255 255;
     --on-error: 255 255 255;
     --on-tertiary-fixed-variant: 89 40 162;
@@ -30,7 +30,7 @@
     --on-primary-fixed-variant: 0 83 25;
     --on-secondary-fixed: 0 26 64;
     --surface-variant: 225 227 221;
-    --inverse-primary: 123 219 128;
+    --inverse-primary: 63 185 80;
     --on-tertiary-fixed: 39 0 87;
     --outline: 115 119 110;
     --inverse-on-surface: 240 241 236;
@@ -47,7 +47,7 @@
     --on-tertiary-container: 39 0 87;
     --tertiary: 109 63 174;
     --secondary-fixed: 215 226 255;
-    --primary: 0 110 35;
+    --primary: 35 134 54;
     --surface-container-low: 242 244 240;
     --on-background: 26 28 25;
     --secondary-container: 215 226 255;
@@ -67,12 +67,12 @@
     --surface-dim: 16 20 26;
     --on-surface-variant: 190 202 186;
     --on-surface: 223 226 235;
-    --surface-tint: 123 219 128;
+    --surface-tint: 63 185 80;
     --primary-container: 35 134 54;
     --secondary-fixed-dim: 172 199 255;
     --tertiary-container: 137 92 212;
-    --primary-fixed: 151 249 153;
-    --primary-fixed-dim: 123 219 128;
+    --primary-fixed: 141 255 173;
+    --primary-fixed-dim: 63 185 80;
     --on-tertiary: 66 0 138;
     --on-error: 105 0 5;
     --on-tertiary-fixed-variant: 89 40 162;
@@ -83,7 +83,7 @@
     --on-primary-fixed-variant: 0 83 25;
     --on-secondary-fixed: 0 26 64;
     --surface-variant: 49 53 60;
-    --inverse-primary: 0 110 35;
+    --inverse-primary: 35 134 54;
     --on-tertiary-fixed: 39 0 87;
     --outline: 137 148 133;
     --inverse-on-surface: 45 49 55;
@@ -100,7 +100,7 @@
     --on-tertiary-container: 255 252 255;
     --tertiary: 213 186 255;
     --secondary-fixed: 215 226 255;
-    --primary: 123 219 128;
+    --primary: 63 185 80;
     --surface-container-low: 24 28 34;
     --on-background: 223 226 235;
     --secondary-container: 2 110 228;

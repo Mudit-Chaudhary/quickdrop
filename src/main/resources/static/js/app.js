@@ -304,9 +304,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
             syncThemeIcon();
+            updateFavicon();
         });
     }
     syncThemeIcon();
+    updateFavicon();
 
     window.addEventListener('scroll', () => {
         const header = document.querySelector('header');
@@ -414,6 +416,18 @@ function syncThemeIcon() {
     const icon = document.getElementById('theme-icon');
     if (!icon) return;
     icon.textContent = document.documentElement.classList.contains('dark') ? 'light_mode' : 'dark_mode';
+}
+
+function updateFavicon() {
+    const isDark = document.documentElement.classList.contains('dark');
+    const favicon = document.getElementById('favicon');
+    if (favicon) {
+        favicon.setAttribute('href', isDark ? '/img/favicon-dark.svg' : '/img/favicon-light.svg');
+    }
+    const themeColor = document.getElementById('theme-color');
+    if (themeColor) {
+        themeColor.setAttribute('content', isDark ? '#1C2026' : '#ECEEEA');
+    }
 }
 
 function resetCreateButton() {
