@@ -1,7 +1,7 @@
 services:
   - type: web
     name: quickdrop
-    runtime: image
+    runtime: docker
     repo: https://github.com/Mudit-Chaudhary/quickdrop
     plan: free
     healthCheckPath: /health
