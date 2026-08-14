@@ -214,6 +214,31 @@ header.header-scrolled {
     color: rgb(var(--error));
 }
 
+.transfer-status.cancelled {
+    color: #f59e0b;
+}
+
+.transfer-cancel-btn {
+    background: none;
+    border: none;
+    color: rgb(var(--on-surface-variant));
+    cursor: pointer;
+    padding: 2px 6px;
+    font-size: 1rem;
+    line-height: 1;
+    border-radius: 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s, color 0.2s;
+}
+.transfer-cancel-btn:hover {
+    opacity: 1;
+    color: rgb(var(--error));
+}
+.transfer-item.cancelled .transfer-cancel-btn,
+.transfer-item.complete .transfer-cancel-btn {
+    display: none;
+}
+
 .loading-spinner {
     width: 40px;
     height: 40px;

@@ -254,7 +254,8 @@ function setupDataChannel() {
             } else if (msg.type === 'cancel') {
                 if (currentTransfer) {
                     currentTransfer.cancelled = true;
-                    updateTransferStatus(currentTransfer, 'Cancelled', 'error');
+                    updateTransferStatus(currentTransfer, 'Cancelled', 'cancelled');
+                    currentTransfer.el.classList.add('cancelled');
                     currentTransfer = null;
                 }
             }
@@ -472,6 +473,9 @@ function sendFile(file) {
     const reader = new FileReader();
     let offset = 0;
 
+    currentTransfer.reader = reader;
+    currentTransfer.file = file;
+
     reader.onload = (e) => {
         if (currentTransfer.cancelled) return;
 
@@ -486,6 +490,7 @@ function sendFile(file) {
         } else {
             dc.send(JSON.stringify({ type: 'transfer-complete' }));
             updateTransferStatus(currentTransfer, 'Complete', '');
+            currentTransfer.el.classList.add('complete');
             updateTransferProgress(currentTransfer, 100, true);
             currentTransfer = null;
             processQueue();
@@ -506,6 +511,18 @@ function sendFile(file) {
     readSlice(0);
 }
 
+function cancelTransfer() {
+    if (!currentTransfer) return;
+    currentTransfer.cancelled = true;
+    if (dc && dc.readyState === 'open') {
+        dc.send(JSON.stringify({ type: 'cancel' }));
+    }
+    updateTransferStatus(currentTransfer, 'Cancelled', 'cancelled');
+    currentTransfer.el.classList.add('cancelled');
+    currentTransfer = null;
+    processQueue();
+}
+
 function addTransferUI(transfer, direction) {
     const container = document.getElementById('transfers');
     const empty = container.querySelector('.transfer-empty');
@@ -516,16 +533,27 @@ function addTransferUI(transfer, direction) {
     el.id = `transfer-${Date.now()}`;
     transfer.el = el;
 
+    const cancelBtnHtml = `
+        <button class="transfer-cancel-btn" aria-label="Cancel transfer" title="Cancel">✕</button>
+    `;
+
     el.innerHTML = `
         <div class="transfer-header">
             <span class="transfer-name">${escapeHtml(transfer.name)}</span>
             <span class="transfer-size">${formatSize(transfer.size)}</span>
+            ${cancelBtnHtml}
         </div>
         <div class="transfer-progress-bar">
             <div class="transfer-progress-fill"></div>
         </div>
         <div class="transfer-status">${direction === 'sending' ? 'Sending...' : 'Receiving...'}</div>
     `;
+
+    const cancelBtn = el.querySelector('.transfer-cancel-btn');
+    cancelBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        cancelTransfer();
+    });
 
     container.prepend(el);
 
