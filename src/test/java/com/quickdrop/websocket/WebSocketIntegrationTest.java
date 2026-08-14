@@ -39,15 +39,23 @@ class WebSocketIntegrationTest {
         String roomId = JsonParser.parseString(createCaptor.getValue().getPayload())
                 .getAsJsonObject().get("roomId").getAsString();
 
+        clearInvocations(creator, joiner);
+
         handler.handleTextMessage(joiner, new TextMessage("{\"type\":\"join-room\",\"roomId\":\"" + roomId + "\"}"));
 
         ArgumentCaptor<TextMessage> joinCaptor = ArgumentCaptor.forClass(TextMessage.class);
         verify(joiner).sendMessage(joinCaptor.capture());
-        assertEquals("room-joined", JsonParser.parseString(joinCaptor.getValue().getPayload())
-                .getAsJsonObject().get("type").getAsString());
+        String joinPayload = joinCaptor.getValue().getPayload();
+        assertEquals("room-joined", JsonParser.parseString(joinPayload).getAsJsonObject().get("type").getAsString());
 
-        handler.handleTextMessage(creator, new TextMessage(
-                "{\"type\":\"offer\",\"sdp\":\"hello\"}"));
+        ArgumentCaptor<TextMessage> peerJoinedCaptor = ArgumentCaptor.forClass(TextMessage.class);
+        verify(creator).sendMessage(peerJoinedCaptor.capture());
+        String peerJoinedPayload = peerJoinedCaptor.getValue().getPayload();
+        assertEquals("peer-joined", JsonParser.parseString(peerJoinedPayload).getAsJsonObject().get("type").getAsString());
+
+        clearInvocations(creator, joiner);
+
+        handler.handleTextMessage(creator, new TextMessage("{\"type\":\"offer\",\"sdp\":\"hello\"}"));
 
         ArgumentCaptor<TextMessage> relayCaptor = ArgumentCaptor.forClass(TextMessage.class);
         verify(joiner).sendMessage(relayCaptor.capture());
