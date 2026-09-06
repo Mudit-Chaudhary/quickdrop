@@ -18,6 +18,9 @@ let reconnectTimer = null;
 let reconnectAttempts = 0;
 let intentionalClose = false;
 let pendingCreate = false;
+let qrCodeInstance = null;
+let qrVisible = false;
+let currentRoomUrl = null;
 
 const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
 const wsUrl = `${protocol}//${location.host}/signal`;
@@ -117,6 +120,8 @@ function handleSignalMessage(msg) {
             updateStatus('Waiting for peer...');
             createPeerConnection();
             resetCreateButton();
+            currentRoomUrl = link;
+            generateQRCode(link);
             break;
 
         case 'room-joined':
@@ -126,6 +131,8 @@ function handleSignalMessage(msg) {
             showView('room-view');
             updateStatus('Connected to room');
             createPeerConnection();
+            currentRoomUrl = `${location.origin}/room/${roomId}`;
+            generateQRCode(currentRoomUrl);
             break;
 
         case 'peer-joined':
@@ -306,6 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
             syncThemeIcon();
             updateFavicon();
+            updateQRColors();
         });
     }
     syncThemeIcon();
@@ -360,16 +368,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const btn = e.currentTarget;
         const icon = btn.querySelector('.material-symbols-outlined');
-        const label = btn.childNodes[btn.childNodes.length - 1];
         btn.classList.add('text-primary', 'border-primary');
         icon.textContent = 'check';
-        label.textContent = 'Copied!';
 
         setTimeout(() => {
             btn.classList.remove('text-primary', 'border-primary');
             icon.textContent = 'content_copy';
-            label.textContent = 'Copy';
         }, 2000);
+    });
+
+    document.getElementById('toggle-qr-btn').addEventListener('click', toggleQRCode);
+    document.getElementById('qr-modal-close')?.addEventListener('click', closeQRModal);
+    document.getElementById('qr-modal-overlay')?.addEventListener('click', closeQRModal);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeQRModal();
     });
 
     document.getElementById('browse-link').addEventListener('click', (e) => {
@@ -592,4 +604,64 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+function generateQRCode(url) {
+    const container = document.getElementById('qr-code-modal');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const isDark = document.documentElement.classList.contains('dark');
+    const darkColor = '#ECEEEA';
+    const lightColor = '#1C2026';
+    const bgColor = isDark ? '#1C2026' : '#ECEEEA';
+
+    const size = 200;
+    const scale = window.devicePixelRatio || 1;
+
+    qrCodeInstance = new QRCode(container, {
+        text: url,
+        width: size * scale,
+        height: size * scale,
+        colorDark: isDark ? darkColor : lightColor,
+        colorLight: bgColor,
+        correctLevel: QRCode.CorrectLevel.M
+    });
+
+    container.querySelectorAll('canvas, img').forEach((el) => {
+        el.style.width = size + 'px';
+        el.style.height = size + 'px';
+    });
+}
+
+function openQRModal() {
+    const modal = document.getElementById('qr-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('qr-modal-close')?.focus(), 50);
+}
+
+function closeQRModal() {
+    const modal = document.getElementById('qr-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function toggleQRCode() {
+    const modal = document.getElementById('qr-modal');
+    if (!modal) return;
+    if (modal.classList.contains('hidden')) {
+        generateQRCode(currentRoomUrl);
+        openQRModal();
+    } else {
+        closeQRModal();
+    }
+}
+
+function updateQRColors() {
+    if (!qrCodeInstance || !currentRoomUrl) return;
+    generateQRCode(currentRoomUrl);
 }

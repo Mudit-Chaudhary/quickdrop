@@ -48,6 +48,7 @@
     --tertiary: 109 63 174;
     --secondary-fixed: 215 226 255;
     --primary: 35 134 54;
+    --primary-hover: 46 160 67;
     --surface-container-low: 242 244 240;
     --on-background: 26 28 25;
     --secondary-container: 215 226 255;
@@ -101,6 +102,7 @@
     --tertiary: 213 186 255;
     --secondary-fixed: 215 226 255;
     --primary: 63 185 80;
+    --primary-hover: 63 185 80;
     --surface-container-low: 24 28 34;
     --on-background: 223 226 235;
     --secondary-container: 2 110 228;
@@ -251,4 +253,67 @@ header.header-scrolled {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+#qr-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#qr-modal.hidden {
+  display: none;
+}
+
+#qr-code-modal {
+  width: 200px;
+  height: 200px;
+  display: inline-flex;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#qr-modal > div:last-child {
+  animation: modalIn 0.2s ease-out;
+}
+
+#qr-modal-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.qr-close-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgb(var(--primary));
+  color: rgb(var(--on-primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.qr-close-btn:hover {
+  background: rgb(var(--primary-hover));
+}
+
+.qr-close-btn:active {
+  transform: scale(0.95);
+}
+
+.qr-close-btn:focus-visible {
+  outline: 2px solid rgb(var(--primary));
+  outline-offset: 2px;
 }
