@@ -29,6 +29,9 @@ public class RoomService {
         if (room == null) {
             return null;
         }
+        if (room.isFull()) {
+            return null;
+        }
         room.addSession(session);
         return room;
     }

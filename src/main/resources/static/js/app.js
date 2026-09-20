@@ -180,8 +180,13 @@ function handleSignalMessage(msg) {
             break;
 
         case 'error':
-            alert(msg.message || 'An error occurred');
-            showView('home-view');
+            if (msg.message?.includes('full')) {
+                alert('Room is full. Only 2 peers allowed.');
+                showView('home-view');
+            } else {
+                alert(msg.message || 'An error occurred');
+                showView('home-view');
+            }
             break;
     }
 }

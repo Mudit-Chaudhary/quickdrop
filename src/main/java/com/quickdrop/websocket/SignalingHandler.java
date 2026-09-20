@@ -63,7 +63,11 @@ public class SignalingHandler extends TextWebSocketHandler {
         JsonObject response = new JsonObject();
         if (room == null) {
             response.addProperty("type", "error");
-            response.addProperty("message", "Room not found");
+            if (!roomService.roomExists(roomId)) {
+                response.addProperty("message", "Room not found");
+            } else {
+                response.addProperty("message", "Room is full (max 2 peers)");
+            }
             sendMessage(session, response);
             return;
         }
